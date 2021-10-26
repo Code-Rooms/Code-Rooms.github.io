@@ -63,6 +63,13 @@ export default function NavbarDrawer() {
                         <Menu.Item key="2" icon={<VscVersions />}>
                             Version 0.1
                         </Menu.Item>
+
+                        <MyDivider />
+                        <Menu.Item key="3">
+                            <a href="https://smartiam.in/" target="_blank">
+                                Hosted :- SmartIAM
+                            </a>
+                        </Menu.Item>
                     </Menu>
                 }
                 keyboard={true}

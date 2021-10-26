@@ -112,7 +112,7 @@ export default function OneRoom({getMyRoomsData}) {
     }
 
     const copyToClipboard = () =>{
-        var toCopy = window.location.origin + "/join_room?roomId=" + roomInfo.roomId;
+        var toCopy = window.location.origin + "/#/join_room?roomId=" + roomInfo.roomId;
 
         var temp = document.createElement("textarea");
         var tempMsg = document.createTextNode(toCopy);
@@ -270,6 +270,7 @@ export default function OneRoom({getMyRoomsData}) {
                     key="members"
                 >
                     <RoomEnrolled 
+                        noOfQuestions={questions.length} 
                         roomInfo={roomInfo} 
                         setRoomInfo={setRoomInfo} 
                         enrolledTable={enrolledTable}    

@@ -5,8 +5,9 @@ import { SearchOutlined } from "@ant-design/icons";
 import { TransverseLoading } from "react-loadingg";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { SiMicrosoftexcel } from "react-icons/si"
 
-export default function RoomEnrolled({ roomInfo, setRoomInfo, enrolledTable, setEnrolledTable }) {
+export default function RoomEnrolled({noOfQuestions, roomInfo, setRoomInfo, enrolledTable, setEnrolledTable }) {
     const getColumnSearchProps = dataIndex => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
             <div style={{ padding: 8 }}>
@@ -118,6 +119,53 @@ export default function RoomEnrolled({ roomInfo, setRoomInfo, enrolledTable, set
         setTableLoading(false);
     };
 
+    const exportToExcel = () => {
+        let xlsx = require('json-as-xlsx');
+        var columns = [
+            { label: 'Username', value: 'userName' },
+            { label: 'Email', value: 'email' },
+            { label: 'Name', value: 'name' },
+        ]
+        var i;
+        for (i = 0; i < roomInfo.specialFields.length; i ++){
+            columns.push(
+                { label: roomInfo.specialFields[i], value: 'special_' + i }
+            )
+        }
+        columns.push(
+            { label: "Submissions (" + noOfQuestions + ")", value: 'questionsSubmitted' },
+        )
+
+        var content = [], toPush;
+        for (var student of enrolledTable){
+            toPush = {
+                userName: student.userName,
+                email: student.email,
+                name: student.name,
+                questionsSubmitted: student.questionsSubmitted,
+            }
+            for(i = 0; i < roomInfo.specialFields.length; i ++){
+                toPush['special_' + i] = student.specialFields[i];
+            }
+            content.push(toPush);
+        }
+
+        let data = [
+            {
+                sheet: 'Sheet 1',
+                columns: columns,
+                content: content
+            }
+        ]
+
+        let settings = {
+            fileName: roomInfo.roomName + " Students Data", // Name of the spreadsheet
+            extraLength: 3, // A bigger number means that columns will be wider
+        }
+
+        xlsx(data, settings) // Will download the excel file
+    }
+
     const columns = [
         {
             title: "Username",
@@ -142,6 +190,15 @@ export default function RoomEnrolled({ roomInfo, setRoomInfo, enrolledTable, set
             ...getColumnSearchProps("email"),
             // sorter: (a, b) => a.device_code.length - b.device_code.length,
             // sortDirections: ["descend", "ascend"],
+        },
+        {
+            title: "Submissions (" + noOfQuestions + ")",
+            dataIndex: "questionsSubmitted",
+            key: "questionsSubmitted",
+            sorter: (a, b) => a.device_code.length - b.device_code.length,
+            sortDirections: ["descend", "ascend"],
+            hidden: noOfQuestions === 0,
+            width: "150px",
         },
         {
             title: "SpecialFields",
@@ -190,6 +247,11 @@ export default function RoomEnrolled({ roomInfo, setRoomInfo, enrolledTable, set
         </div>
     ) : (
         <div>
+            <div style={{textAlign: 'right', marginBottom: '10px'}}>
+                <Button icon={<SiMicrosoftexcel style={{marginRight: '10px'}} />} onClick={exportToExcel} >
+                    Export to excel
+                </Button>
+            </div>
             <Table 
                 loading={tableLoading} 
                 columns={columns} 

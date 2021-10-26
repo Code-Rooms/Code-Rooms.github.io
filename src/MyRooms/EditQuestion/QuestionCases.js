@@ -79,7 +79,7 @@ export default function QuestionCases({testCases, setTestCases}) {
                     </Button>
                 </span>
             </span>
-            <div className="outer-scroll-div">
+            <div className="outer-scroll-div" style={{paddingBottom: '250px'}}>
                 {
                     testCases.map((tcase, index) => (
                         <>

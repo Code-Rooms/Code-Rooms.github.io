@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Typography } from 'antd';
 import { PointSpreadLoading } from 'react-loadingg';
 import axios from 'axios';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { useSnackbar } from 'notistack';
 
 export default function VerifyEmail() {
@@ -14,17 +14,19 @@ export default function VerifyEmail() {
     
     const queryParams = new URLSearchParams(useLocation().search);
     const { enqueueSnackbar } = useSnackbar();
+    const history = useHistory();
 
     useEffect(async() => {
         if(countdown <= 0){
-            window.location.href = "/login"
+            // window.location.href = "/login"
+            history.replace("/login");
         }
 
         if(result === ""){
             if(!queryParams.has("email") || !queryParams.has("otp")){
                 setResult("Invalid Credentials");
                 enqueueSnackbar("Some Error occurred", {
-                    variant: "success",
+                    variant: "error",
                 });
             }
             else{
@@ -70,7 +72,7 @@ export default function VerifyEmail() {
                 ) : (
                     <div className="verifyEmail-status-div">
                         <div>Status : <span style={{color: statusColor}}>{result}</span></div>
-                        <div>Redirecting to <span><a href="/login">login</a></span> page in {countdown} seconds</div>
+                        <div>Redirecting to <span><a href="/#/login">login</a></span> page in {countdown} seconds</div>
                     </div>
                 )
             }

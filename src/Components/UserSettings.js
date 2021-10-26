@@ -172,7 +172,7 @@ export default function UserSettings() {
                                         message: "Please input valid username to set!",
                                     },
                                     {
-                                        pattern: new RegExp("^[A-Z][a-z0-9_-]{3,15}$"),
+                                        pattern: new RegExp("^[A-Z][a-z0-9_-]{2,15}$"),
                                         message:"Invalid username"
                                     }
                                 ]}

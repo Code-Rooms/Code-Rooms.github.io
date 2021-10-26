@@ -33,7 +33,7 @@ export default function MyNavbar() {
                 </Breadcrumb>
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
-                <Tooltip title="shlokzanwar14@gmail.com">
+                <Tooltip title="coderooms.sr@gmail.com">
                     <div style={{ fontSize: "25px", margin: "0px 20px", fontStyle: "italic", cursor: "pointer" }}>
                         Code Rooms
                     </div>

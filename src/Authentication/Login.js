@@ -1,6 +1,6 @@
 import { Form, Input, Button } from "antd";
 import axios from "axios";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { useSnackbar } from "notistack";
 
@@ -8,11 +8,51 @@ export default function Login() {
     document.title = "Login | Code Rooms"
 
     const [loading, setLoading] = useState(false);
+    const [userName, setUserName] = useState("");
     const history = useHistory();
-    const { enqueueSnackbar } = useSnackbar();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    const resendEmail = async(key) => {
+        closeSnackbar(key);
+        setLoading(true);
+        await axios.get("/auth/resend_verification_link", {
+            params: {
+                username: userName
+            }
+        })
+            .then(res => {
+                enqueueSnackbar("Verification link sent.", {variant: 'success'});
+            })
+            .catch(err => {
+                try {
+                    enqueueSnackbar(err.response.data.detail, {
+                        variant: "error",
+                    });
+                } catch (error) {
+                    enqueueSnackbar("Some Error occurred.", {
+                        variant: "error",
+                    });
+                }
+            })
+        setLoading(false);
+    }
+
+    const action = key => (
+        <React.Fragment>
+            <>
+            <div onClick={() => { resendEmail(key) }} style={{background:"transparent", border:"none", cursor:"pointer", color:"#fc28b2", paddingRight:"8px", textDecoration:"underline", fontWeight:"bolder" }}>
+                Resend Email
+            </div>
+            <div onClick={() => { closeSnackbar(key) }} style={{background:"transparent", border:"none", cursor:"pointer", color:"#fc28b2", textDecoration:"underline", fontWeight:"bolder" }}>
+                Dismiss
+            </div>
+            </>
+        </React.Fragment>
+    );
 
     const onFinish = async values => {
         setLoading(true);
+        setUserName(values.userName);
         await axios
             .post("/auth/login", {
                 username: values.userName,
@@ -21,17 +61,26 @@ export default function Login() {
             .then(res => {
                 // console.log(res);
                 localStorage.setItem("JWTtoken", res.data.access_token);
-                try {
-                    window.location.href = history.location.state.from;
-                } catch (error) {
-                    window.location.href = "/";
-                }
+                // try {
+                //     window.location.href = history.location.state.from;
+                // } catch (error) {
+                window.location.href = "/";
+                // }
             })
             .catch(err => {
                 try {
-                    enqueueSnackbar(err.response.data.detail, {
-                        variant: "error",
-                    });
+                    if(err.response.status === 406){
+                        enqueueSnackbar(err.response.data.detail, {
+                            variant: 'warning',
+                            persist: true,
+                            action,
+                        });
+                    }
+                    else{
+                        enqueueSnackbar(err.response.data.detail, {
+                            variant: "error",
+                        });
+                    }
                 } catch (error) {
                     enqueueSnackbar("Some Error occurred.", {
                         variant: "error",
@@ -104,9 +153,9 @@ export default function Login() {
                     <Input.Password />
                 </Form.Item>
                 <div>
-                    <a href="/change_password"> Forgot password. </a>
+                    <a href="/#/change_password"> Forgot password. </a>
                 </div>
-                <a href="/signup"> Dont have an account ? Create one. </a>
+                <a href="/#/signup"> Dont have an account ? Create one. </a>
                 
                 <Form.Item>
                     <Button

@@ -130,7 +130,7 @@ export default function Signup() {
                                 message: "Please input username to set!",
                             },
                             {
-                                pattern: new RegExp("^[A-Z][a-z0-9_-]{4,10}$"),
+                                pattern: new RegExp("^[A-Z][a-z0-9_-]{2,15}$"),
                                 message:"Invalid username"
                             }
                         ]}
@@ -175,7 +175,7 @@ export default function Signup() {
                         <Input.Password />
                     </Form.Item>
                 </div>
-                <a href="/login"> Already have an account? Log in. </a>
+                <a href="/#/login"> Already have an account? Log in. </a>
                  <Form.Item
                     wrapperCol={{
                         offset: 8,

@@ -4,6 +4,7 @@ import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSnackbar } from "notistack";
 import moment from "moment";
+import { SiMicrosoftexcel } from "react-icons/si";
 
 export default function ManageSelected({ questionDetails, roomDetails, enrolled, setEnrolled, selected, setSelected }) {
     const getColumnSearchProps = dataIndex => ({
@@ -89,6 +90,59 @@ export default function ManageSelected({ questionDetails, roomDetails, enrolled,
         setShowTable(false);
     };
 
+    const exportToExcel = () => {
+        let xlsx = require('json-as-xlsx');
+        var columns = [
+            { label: 'Username', value: 'userName' },
+            { label: 'Email', value: 'email' },
+        ]
+        var i;
+        for (i = 0; i < roomDetails.specialFields.length; i ++){
+            columns.push(
+                { label: roomDetails.specialFields[i], value: 'special_' + i }
+            )
+        }
+        if(questionDetails.noOfTCases > 0){
+            columns.push(
+                { label: "Cases Passed (" + questionDetails.noOfTCases + ")", value: row => (row.submissionId !== 0 ? row.tCasesPassed : "") }
+            )
+        }
+        columns.push(
+            { label: "Submitted At", value: row => (row.submissionId !== 0 ? moment(row.submittedAt).format("MMMM Do, h:mm a") : "") }
+        )
+        
+
+        var content = [], toPush;
+        for (var student of enrolled){
+            toPush = {
+                submissionId: student.submissionId,
+                userName: student.userName,
+                email: student.email,
+                tCasesPassed: student.tCasesPassed,
+                submittedAt: student.submittedAt,
+            }
+            for(i = 0; i < roomDetails.specialFields.length; i ++){
+                toPush['special_' + i] = student.specialFields[i];
+            }
+            content.push(toPush);
+        }
+
+        let data = [
+            {
+                sheet: 'Sheet 1',
+                columns: columns,
+                content: content
+            }
+        ]
+
+        let settings = {
+            fileName: questionDetails.title + " Submissions", // Name of the spreadsheet
+            extraLength: 3, // A bigger number means that columns will be wider
+        }
+
+        xlsx(data, settings) // Will download the excel file
+    }
+
     const columns = [
         {
             title: "Username",
@@ -123,9 +177,11 @@ export default function ManageSelected({ questionDetails, roomDetails, enrolled,
         },
         {
             title: "Submitted At",
-            key: "submittedss",
+            key: "submittedAt",
             // width: "100px",
             render: row => (row.submissionId !== 0 ? <> {moment(row.submittedAt).format("MMMM Do, h:mm a")} </> : <></>),
+            // sorter: (a, b) => a.device_code.length - b.device_code.length,
+            // sortDirections: ["descend", "ascend"],
         },
         {
             title: "Submitted",
@@ -150,13 +206,18 @@ export default function ManageSelected({ questionDetails, roomDetails, enrolled,
         <div>
             <div style={{ textAlign: "left", paddingLeft: "15px", paddingBottom: "15px", borderBottom: "2px solid #fff" }}>
                 <Button
-                    onClick={() => {
-                        setShowTable(true);
-                    }}
+                    onClick={() => {setShowTable(true);}}
                     style={{ margin: "20px 0px 0px 0px" }}
                     type="primary"
                 >
                     Open Submission Table
+                </Button>
+                <Button
+                    icon={<SiMicrosoftexcel style={{marginRight: '10px'}} />}
+                    onClick={exportToExcel}
+                    style={{ margin: "20px 0px 0px 20px" }}
+                >
+                    Export to excel
                 </Button>
             </div>
             <div style={{ padding: "15px", borderBottom: "2px solid #fff" }}>

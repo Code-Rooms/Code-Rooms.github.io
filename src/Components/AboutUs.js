@@ -29,6 +29,7 @@ export default function AboutUs() {
             <ScrollToTop smooth style={{paddingTop: '5px' }} color="var(--primaryBackground)" />
             <div className="aboutus-inner">
                 <img
+                    onClick={() => {window.location.href = "/#/"}}
                     src="./Logo.PNG"
                     style={{ alignSelf: "center", width: '250px', boxShadow: "20px 20px 2px rgba(0, 0, 0, 0.3)", marginBottom: '15px' }}
                 />

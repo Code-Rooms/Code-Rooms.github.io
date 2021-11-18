@@ -10,6 +10,12 @@
     {
       "src": "Logo.png",
       "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "Logo.png",
+      "type": "image/png",
       "sizes": "192x192"
     },
     {
@@ -18,7 +24,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#4949d6",
   "background_color": "#0D1117"

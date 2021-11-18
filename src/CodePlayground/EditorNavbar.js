@@ -3,6 +3,7 @@ import { Button, Input, Modal, Select } from "antd";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
+import { sendAnalytics } from "../Components/Analytics";
 const { Option } = Select;
 
 export default function EditorNavbar({savedCodes, setSavedCodes, selectedCode, setSelectedCode, loading ,setLoading, getEditorCode, input, setOutput}) {
@@ -17,6 +18,8 @@ export default function EditorNavbar({savedCodes, setSavedCodes, selectedCode, s
 
 
     const handleRun = async() => {
+        sendAnalytics("CodeRooms", "Run Code", "");
+
         setLoading(true);
         setOutput("");
         await axios.post("/run_code", {

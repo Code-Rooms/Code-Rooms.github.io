@@ -584,9 +584,11 @@ code {
 }
 .aboutus-cards{
 	margin: 20px 0px 40px 0px;
-	display:inline-flex;
-	justify-content: space-between;
-	flex-direction: row;
+	display: inline-table;
+	margin: 20px 40px;
+	/* flex-flow: row; */
+	/* justify-content: space-between; */
+	/* flex-direction: row; */
 	column-gap: 100px;
 }
 .aboutus-content{

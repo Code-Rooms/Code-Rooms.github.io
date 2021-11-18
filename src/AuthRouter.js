@@ -20,12 +20,21 @@ import ViewQuestion from "./EnrolledRooms/ViewQuestion/ViewQuestion";
 import CheckSubmissions from "./MyRooms/CheckSubmissions/CheckSubmissions";
 import UserSettings from "./Components/UserSettings";
 import AboutUs from "./Components/AboutUs";
+import { useLocation } from "react-router";
+import ReactGA from 'react-ga';
 
 export default function AuthRouter() {
     const [loading, setLoading] = useState(true);
     const authReducer = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
+    
+    const location = useLocation();
+	useEffect(() => {
+		// console.log('location', location.pathname);
+        ReactGA.pageview(location.pathname);
+	}, [location.pathname])
+
 
     const handleError = (err) => {
         if(!err.response){
@@ -41,6 +50,9 @@ export default function AuthRouter() {
     }
 
     const getMyRoomsData = async() => {
+        if(authReducer.accountType === 0){
+            return;
+        }
         dispatch(setMyRoomsLoading());
         axios.get("/my_rooms")
             .then(res => {
@@ -83,7 +95,9 @@ export default function AuthRouter() {
                         firstName: decoded.firstName,
                         lastName: decoded.lastName,
                         email: decoded.email,
+                        accountType: !decoded.accountType ? 1 : decoded.accountType,
                     };
+                    console.log(data);
                     // decoded.isLogged = true;
                     dispatch(loginUser(data));
                     getEnrolledRoomsData();
@@ -98,7 +112,7 @@ export default function AuthRouter() {
     }, []);
 
     return loading ? (
-        <div>Loading</div>
+        <div style={{fontSize: '40px', fontWeight: 'bolder', color: "var(--secondaryBackground)"}}>Loading .....</div>
     ) : !authReducer.isLogged ? (
         <Redirect
             push
@@ -112,46 +126,80 @@ export default function AuthRouter() {
     ) : (
         <>
             <MyNavbar />
-            {/* <div style={{height: (height-63) + "px", position: 'relative' }}> */}
-                <Switch>
-                    <Route exact path="/my_rooms">
-                        <AllRooms getMyRoomsData={getMyRoomsData} />
-                    </Route>
-                    <Route exact path="/my_rooms/:id">
-                        <OneRoom getMyRoomsData={getMyRoomsData} />
-                    </Route>
-                    <Route exact path="/join_room">
-                        <JoinRoom />
-                    </Route>
-                    <Route exact path="/enrolled_rooms">
-                        <AllEnrolled getEnrolledRoomsData={getEnrolledRoomsData} />
-                    </Route>
-                    <Route exact path="/enrolled_rooms/:id">
-                        <EnrolledRoom />
-                    </Route>
-                    <Route exact path="/edit_question">
-                        <EditQuestion />
-                    </Route>
-                    <Route exact path="/question">
-                        <ViewQuestion />
-                    </Route>
-                    <Route exact path="/submissions">
-                        <CheckSubmissions />
-                    </Route>
-                    <Route exact path="/code">
-                        <CodePlayground />
-                    </Route>
-                    <Route exact path="/user_settings">
-                        <UserSettings />
-                    </Route>
-                    <Route exact path="/about">
-                        <AboutUs />
-                    </Route>
-                    <Route path="/">
-                        <Home />
-                    </Route>
-                </Switch>
-            {/* </div> */}
+            {
+                authReducer.accountType > 0 ? (
+                <>
+                    <Switch>
+                        <Route exact path="/my_rooms">
+                            <AllRooms getMyRoomsData={getMyRoomsData} />
+                        </Route>
+                        <Route exact path="/my_rooms/:id">
+                            <OneRoom getMyRoomsData={getMyRoomsData} />
+                        </Route>
+                        <Route exact path="/edit_question">
+                            <EditQuestion />
+                        </Route>
+                        <Route exact path="/submissions">
+                            <CheckSubmissions />
+                        </Route>
+                        <Route exact path="/join_room">
+                            <JoinRoom />
+                        </Route>
+                        <Route exact path="/enrolled_rooms">
+                            <AllEnrolled getEnrolledRoomsData={getEnrolledRoomsData} />
+                        </Route>
+                        <Route exact path="/enrolled_rooms/:id">
+                            <EnrolledRoom />
+                        </Route>
+                        <Route exact path="/question">
+                            <ViewQuestion />
+                        </Route>
+                        <Route exact path="/code">
+                            <CodePlayground />
+                        </Route>
+                        <Route exact path="/user_settings">
+                            <UserSettings />
+                        </Route>
+                        <Route exact path="/about">
+                            <AboutUs />
+                        </Route>
+                        <Route path="/">
+                            <Home />
+                        </Route>
+
+                    </Switch>
+                    
+                </>
+                ) : (
+                <>
+                    <Switch>
+                        <Route exact path="/join_room">
+                            <JoinRoom />
+                        </Route>
+                        <Route exact path="/enrolled_rooms">
+                            <AllEnrolled getEnrolledRoomsData={getEnrolledRoomsData} />
+                        </Route>
+                        <Route exact path="/enrolled_rooms/:id">
+                            <EnrolledRoom />
+                        </Route>
+                        <Route exact path="/question">
+                            <ViewQuestion />
+                        </Route>
+                        <Route exact path="/code">
+                            <CodePlayground />
+                        </Route>
+                        <Route exact path="/user_settings">
+                            <UserSettings />
+                        </Route>
+                        <Route exact path="/about">
+                            <AboutUs />
+                        </Route>
+                        <Route path="/">
+                            <Home />
+                        </Route>
+                    </Switch>
+                </>)
+            }
         </>
     );
 }

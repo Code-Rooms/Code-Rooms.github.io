@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import PointSpreadLoading from 'react-loadingg/lib/PointSpreadLoading';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
+import { sendAnalytics } from '../Components/Analytics';
 import { logoutUser } from '../Redux/Actions/AuthActions';
 import { setEnrolled } from '../Redux/Actions/RoomsDataActions';
 
@@ -49,6 +50,9 @@ export default function JoinRoom() {
                 else{
                     enqueueSnackbar(`Joined Room - ${res.data.roomName} successfully.`, {variant: 'success'});
                 }
+
+                sendAnalytics("CodeRooms", "Joined Room", `Joined room ${queryParams.get("roomId")}`);
+
                 dispatch(setEnrolled(res.data.enrolledRooms));
                 history.replace('/enrolled_rooms');
             })

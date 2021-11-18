@@ -29,7 +29,7 @@ export default function RenderQuestions({ questions }) {
         }
         if(moment(question.endTime).diff(moment().format(), 'seconds') < 0 ){
             return(
-                <div style={{color: 'var(--error)', fontSize: '22px'}}>
+                <div style={{color: 'var(--privateRoom)', fontSize: '22px'}}>
                     Due date over
                 </div>
             )

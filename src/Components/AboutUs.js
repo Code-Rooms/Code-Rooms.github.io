@@ -83,6 +83,8 @@ export default function AboutUs() {
                             }
                         />
                     </Card>
+                </div>
+                <div className="aboutus-cards">
                     <Card
                         style={{ width: 300 }}
                         cover={<img alt="Roshan" src="https://i.ibb.co/K6cpBDW/img.jpg" />}
@@ -118,6 +120,42 @@ export default function AboutUs() {
                                     </div>
                                     <div style={{textAlign: 'left'}}>
                                         Web dev enthusiast 
+                                    </div>
+                                </span>
+                            }
+                        />
+                    </Card>
+                </div>
+                <div className="aboutus-cards">
+                    <Card
+                        style={{ width: 300 }}
+                        cover={<img alt="Roshan" src="https://i.ibb.co/ssQVy57/Parag.jpg" />}
+                        actions={[
+                            (
+                                <a href="https://github.com/parag-2804" target="_blank">
+                                    <BsGithub className="aboutus-card-icons" key="github" />
+                                </a>
+                            ),
+                            (
+                                <a href="https://www.linkedin.com/in/parag-jadhav-0205a5215/" target="_blank">
+                                    <BsLinkedin className="aboutus-card-icons" key="linkedin" />
+                                </a>
+                            ),
+                            (
+                                <Tooltip title="parag2804@gmail.com">
+                                    <a href="mailto:parag2804@gmail.com" target="_blank">
+                                        <SiGmail className="aboutus-card-icons" key="gmail" />
+                                    </a>
+                                </Tooltip>
+                            ),
+                        ]}
+                    >
+                        <Meta
+                            title="Parag Jadhav"
+                            description={
+                                <span >
+                                    <div style={{textAlign: 'left', marginBottom: '15px'}}>
+                                        (TY CS B-Tech) Student at vishwakarma institute of information technology, pune.
                                     </div>
                                 </span>
                             }

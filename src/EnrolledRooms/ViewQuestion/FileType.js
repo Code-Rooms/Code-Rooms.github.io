@@ -6,6 +6,7 @@ import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import FileViewer from 'react-file-viewer';
 import { useLocation } from 'react-router';
+import { sendAnalytics } from '../../Components/Analytics';
 import { backendURL } from '../../Constants';
 
 
@@ -24,6 +25,7 @@ export default function FileType({setOverlayLoading, questionDetails, setQuestio
 
 
     const deleteSubmission = async() => {
+        sendAnalytics("CodeRooms", "Delete File Submission", "");
         setOverlayLoading(true);
         await axios.post("/delete_submitted_file", {
             questionId:  queryParams.get("qId"),
@@ -78,6 +80,7 @@ export default function FileType({setOverlayLoading, questionDetails, setQuestio
     }
 
     const handleSubmitFile = async() => {
+        sendAnalytics("CodeRooms", "Submit File", "");
         setOverlayLoading(true);
         const formData = new FormData();
         formData.append('file', file);
@@ -158,7 +161,7 @@ export default function FileType({setOverlayLoading, questionDetails, setQuestio
                 filePath={`${backendURL}/get_submitted_file?questionId=${queryParams.get("qId")}&submissionId=${questionDetails.submissionId}&token=${localStorage.getItem('JWTtoken')}`}
             />
         </>
-    ) : (
+    ) : moment(questionDetails.endTime).isAfter(moment().format()) ? (
         <>
             <div style={{height: 'auto', display: 'flex', alignItems: "center", justifyContent: 'space-between', margin: '10px 0px 30px 0px'}}>
                 <Upload
@@ -196,6 +199,11 @@ export default function FileType({setOverlayLoading, questionDetails, setQuestio
                 ) : (<></>)
             }
         </>
+    ) : (
+        <div className="playground-code-title" style={{color: 'var(--privateRoom)'}}>
+            Due Date Over
+        </div>
     )
+    
 }
 

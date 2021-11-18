@@ -6,6 +6,7 @@ import axios from "axios";
 import { useLocation } from "react-router";
 import { useSnackbar } from "notistack";
 import moment from "moment";
+import { sendAnalytics } from "../../Components/Analytics";
 const { Option } = Select;
 
 export default function EditorNavbar({questionDetails, setQuestionDetails, loading ,setLoading, getEditorCode, input, setOutput}) {
@@ -20,6 +21,8 @@ export default function EditorNavbar({questionDetails, setQuestionDetails, loadi
 
 
     const handleRun = async() => {
+        sendAnalytics("CodeRooms", "Run Code", "");
+
         setLoading(true);
         setOutput("");
         await axios.post("/run_code", {
@@ -38,6 +41,7 @@ export default function EditorNavbar({questionDetails, setQuestionDetails, loadi
     };
 
     const handleSave = async() => {
+        sendAnalytics("CodeRooms", "Save Code", "");
         setLoading(true);
         await axios.post("/save_question_code", {
                 questionId: queryParams.get("qId"),
@@ -54,6 +58,7 @@ export default function EditorNavbar({questionDetails, setQuestionDetails, loadi
            
     };
     const handleSubmit = async() => {
+        sendAnalytics("CodeRooms", "Submit Code", "");
         setLoading(true);
         await axios.post("/submit_question_code", {
                 questionId: queryParams.get("qId"),

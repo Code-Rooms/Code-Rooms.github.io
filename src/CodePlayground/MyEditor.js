@@ -48,7 +48,7 @@ export default function MyEditor({ savedCodes, setSavedCodes, selectedCode, setS
                     />
                 </Pane>
                 <SplitPane minSize={height - 65 - 270} maxSize={height - 75} defaultSize={height - 65 - 170} split="horizontal">
-                    <Pane>
+                    <Pane style={{ height: "100%", width: "100%"}} >
                         <EditorNavbar
                             savedCodes={savedCodes}
                             setSavedCodes={setSavedCodes}
@@ -68,7 +68,7 @@ export default function MyEditor({ savedCodes, setSavedCodes, selectedCode, setS
                             width="100%"
                         />
                     </Pane>
-                    <Pane style={{ height: "100%", width: "100%"}}>
+                    <Pane style={{ height: "100%", width: "100%"}} >
                         <div style={{display: 'inline-flex', width: '100%', height: '100%'}}>
                             <div style={{width: '100%', background: "var(--primaryBackground)", padding: '6px', borderRight: '2px solid var(--primaryText)'}}>
                                 <div className="code-editor-input-title">Input</div>

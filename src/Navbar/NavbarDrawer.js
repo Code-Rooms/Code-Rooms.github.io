@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Drawer } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { Menu } from 'antd';
+import { Menu, Tooltip } from 'antd';
 import { BsPersonSquare } from "react-icons/bs";
 import { VscVersions } from "react-icons/vsc";
 import {
@@ -51,10 +51,12 @@ export default function NavbarDrawer() {
 
             <Drawer
                 title={
-                    <div style={{ width: "100%", display: "inline-flex", alignItems: "center" }}>
-                        <BsPersonSquare style={{ fontSize: "20px", marginRight: "20px" }} />
-                        <div style={{ fontSize: "20px" }}>{authReducer.userName}</div>
-                    </div>
+                    <Tooltip title={authReducer.accountType > 0 ? "Teacher account" : "Student account"} placement="bottomLeft" >
+                        <div style={{ width: "100%", display: "inline-flex", alignItems: "center" }}>
+                            <BsPersonSquare style={{ fontSize: "20px", marginRight: "20px" }} />
+                            <div style={{ fontSize: "20px" }}>{authReducer.userName}</div>
+                        </div>
+                    </Tooltip>
                 }
                 footer={
                     <Menu style={{  background: 'var(--primaryBackground)'}} mode="vertical" theme="dark" selectable={false}>
@@ -122,33 +124,37 @@ export default function NavbarDrawer() {
                         }
                     </SubMenu>
 
-                    <MyDivider />
+                    {authReducer.accountType > 0 ? (
+                        <>
+                            <MyDivider />
 
-                    <SubMenu icon={<AppstoreOutlined/>} title="My Rooms" key="sub2" onTitleClick={() => {pushLink(`/my_rooms`)}} >
-                        {  
-                            roomsDataReducer.myRoomsLoading ? (
-                                <Menu.Item >Loading .....</Menu.Item>
-                            ) : (
-                                roomsDataReducer.myRooms.length === 0 ? (
-                                    <Menu.Item >No Rooms</Menu.Item>
-                                ) : (
-                                    roomsDataReducer.myRooms.map(room => (
-                                        <Menu.Item key={room.roomId} onClick={() => {pushLink(`/my_rooms/${room.roomId}`)}}>
-                                            {room.roomName}
-                                        </Menu.Item>
-                                    ))
-                                )
-                            )
-                        }
+                            <SubMenu icon={<AppstoreOutlined/>} title="My Rooms" key="sub2" onTitleClick={() => {pushLink(`/my_rooms`)}} >
+                                {  
+                                    roomsDataReducer.myRoomsLoading ? (
+                                        <Menu.Item >Loading .....</Menu.Item>
+                                    ) : (
+                                        roomsDataReducer.myRooms.length === 0 ? (
+                                            <Menu.Item >No Rooms</Menu.Item>
+                                        ) : (
+                                            roomsDataReducer.myRooms.map(room => (
+                                                <Menu.Item key={room.roomId} onClick={() => {pushLink(`/my_rooms/${room.roomId}`)}}>
+                                                    {room.roomName}
+                                                </Menu.Item>
+                                            ))
+                                        )
+                                    )
+                                }
 
-                        <MyDivider />
+                                <MyDivider />
 
-                        <Menu.Item icon={<PlusCircleOutlined />} onClick={() =>{pushLink("/my_rooms?createNewRoom=true")}}>
-                            Create New
-                        </Menu.Item>
+                                <Menu.Item icon={<PlusCircleOutlined />} onClick={() =>{pushLink("/my_rooms?createNewRoom=true")}}>
+                                    Create New
+                                </Menu.Item>
+                            </SubMenu>
+                        </>
+                        ) : (<></>)
+                    }
 
-                    </SubMenu>
-                    
                     <MyDivider />
 
                     <Menu.Item icon={<CodeOutlined />} key="code" onClick={() =>{pushLink("/code")}}>

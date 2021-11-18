@@ -7,6 +7,7 @@ import useWindowDimensions from "../../Components/WindowDimensions";
 import { Select } from "antd";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { sendAnalytics } from "../../Components/Analytics";
 const { Option } = Select;
 
 export default function CodeType({
@@ -68,6 +69,7 @@ export default function CodeType({
 
 
     const handleRun = async () => {
+        sendAnalytics("CodeRooms", "Run Code", "");
         setOverlayLoading(true);
         setOutput("");
         await axios
@@ -88,7 +90,7 @@ export default function CodeType({
 
     return (
         <SplitPane minSize={height - 65 - 270} maxSize={height - 75} defaultSize={height - 65 - 170} split="horizontal">
-            <Pane>
+            <Pane style={{ height: "100%", width: "100%"}} >
                 <div className="code-editor-nav">
                     <span>
                         <Button

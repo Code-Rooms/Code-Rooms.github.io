@@ -95,7 +95,7 @@ export default function AuthRouter() {
                         firstName: decoded.firstName,
                         lastName: decoded.lastName,
                         email: decoded.email,
-                        accountType: !decoded.accountType ? 1 : decoded.accountType,
+                        accountType: !decoded.accountType ? 0 : decoded.accountType,
                     };
                     console.log(data);
                     // decoded.isLogged = true;

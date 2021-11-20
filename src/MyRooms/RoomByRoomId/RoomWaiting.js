@@ -178,8 +178,9 @@ export default function RoomWaiting({ roomInfo, setRoomInfo, waitingTable, setWa
                     title: field,
                     // dataIndex: field,
                     key: field,
-                    // ...getColumnSearchProps(field),
-                    render: row => (row.specialFields[index])
+                    render: row => (row.specialFields[index]),
+                    sorter: (a, b) => a.specialFields[index] - b.specialFields[index],
+                    sortDirections: ["descend", "ascend"],
 
                 }
             }),

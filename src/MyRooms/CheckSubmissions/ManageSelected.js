@@ -164,6 +164,8 @@ export default function ManageSelected({ questionDetails, roomDetails, enrolled,
                     // dataIndex: field,
                     key: field,
                     render: row => row.specialFields[index],
+                    sorter: (a, b) => a.specialFields[index] - b.specialFields[index],
+                    sortDirections: ["descend", "ascend"],
                 };
             }),
             hidden: roomDetails.specialFields.length === 0,

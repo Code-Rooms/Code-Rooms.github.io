@@ -195,7 +195,7 @@ export default function RoomEnrolled({noOfQuestions, roomInfo, setRoomInfo, enro
             title: "Submissions (" + noOfQuestions + ")",
             dataIndex: "questionsSubmitted",
             key: "questionsSubmitted",
-            sorter: (a, b) => a.device_code.length - b.device_code.length,
+            sorter: (a, b) => a.questionsSubmitted - b.questionsSubmitted,
             sortDirections: ["descend", "ascend"],
             hidden: noOfQuestions === 0,
             width: "150px",
@@ -207,7 +207,9 @@ export default function RoomEnrolled({noOfQuestions, roomInfo, setRoomInfo, enro
                     title: field,
                     // dataIndex: field,
                     key: field,
-                    render: row => (row.specialFields[index])
+                    render: row => (row.specialFields[index]),
+                    sorter: (a, b) => a.specialFields[index] - b.specialFields[index],
+                    sortDirections: ["descend", "ascend"],
                 }
             }),
             hidden: roomInfo.specialFields.length === 0,

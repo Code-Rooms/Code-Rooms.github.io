@@ -41,7 +41,7 @@ export default function CheckSubmissions() {
                 "url": "/my_rooms/" + roomDetails.roomId
             },
             {
-                "name": "Submissions",
+                "name": "Submissions ("+questionDetails.title+")",
                 "url": "/submissions?qId=/" + queryParams.get("qId")
             },
         ] ));

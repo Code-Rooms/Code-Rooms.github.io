@@ -1,4 +1,5 @@
 import { Modal } from 'antd';
+import Countdown from 'antd/lib/statistic/Countdown';
 import axios from 'axios';
 import { convertFromRaw, EditorState } from 'draft-js';
 import moment from 'moment';
@@ -86,7 +87,7 @@ export default function ViewQuestion() {
                 "url": "/enrolled_rooms/" + roomDetails.roomId
             },
             {
-                "name": "Question",
+                "name": questionDetails.title,
                 "url": "/question?qId=/" + queryParams.get("qId")
             },
         ] ));
@@ -132,15 +133,29 @@ export default function ViewQuestion() {
             <SplitPane style={{ position: "absolute" }} minSize={300} maxSize={620} defaultSize={400} split="vertical">
                 <Pane>
                     <div style={{ padding: "15px", borderBottom: "2px solid #fff" }}>
-                        <div className="myRooms-cards-description" style={{fontSize: '15px'}}>
+                        <div className="myRooms-cards-description" style={{fontSize: '15px', 
+                            color: moment(questionDetails.endTime).diff(moment().format(), 'seconds') < 0 ? 'red' : '#fff'
+                        }}>
                             <span style={{display: "inline-flex", minWidth: "170px" }}>End Time</span>
-                            {moment(questionDetails.endTime).format("Do MMM HH:mm a")}
+                            {
+                                moment(questionDetails.endTime).diff(moment().format(), 'hours') > 10 || moment(questionDetails.endTime).diff(moment().format(), 'seconds') < 0 ?
+                                moment(questionDetails.endTime).format("Do MMM hh:mm a")
+                                :     
+                                <Countdown
+                                    valueStyle={{fontSize: '15px', color: 'var(--privateRoom)'}}
+                                    value={questionDetails.endTime}
+                                    onFinish={() => {
+                                        window.location.reload();
+                                    }}
+                                    format="H[h] : m[m] : s[s]"
+                                />
+                            }
                         </div>
                         {
                             questionDetails.submitted ? (
                                 <div className="myRooms-cards-description" style={{fontSize: '15px'}}>
                                     <span style={{ display: "inline-flex", minWidth: "170px" }}>Submitted At</span>
-                                    {moment(questionDetails.submittedAt).format("Do MMM HH:mm a")}
+                                    {moment(questionDetails.submittedAt).format("Do MMM hh:mm a")}
                                 </div>
                             ) : (<></>)
                         }

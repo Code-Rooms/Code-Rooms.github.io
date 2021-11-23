@@ -182,7 +182,18 @@ export default function ManageSelected({ questionDetails, roomDetails, enrolled,
             key: "submittedAt",
             // width: "100px",
             render: row => (row.submissionId !== 0 ? <> {moment(row.submittedAt).format("MMMM Do, h:mm a")} </> : <></>),
-            // sorter: (a, b) => a.device_code.length - b.device_code.length,
+            // sorter: (a, b) => moment(a.submittedAt) - moment(b.submittedAt),
+            sorter: (a, b) => {
+                if(!b.submittedAt){
+                    return -1;
+                }
+                if(!a.submittedAt){
+                    return 1;
+                }
+                else{
+                    return moment(a.submittedAt) - moment(b.submittedAt);
+                }
+            },
             // sortDirections: ["descend", "ascend"],
         },
         {

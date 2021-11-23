@@ -97,7 +97,7 @@ export default function AuthRouter() {
                         email: decoded.email,
                         accountType: !decoded.accountType ? 0 : decoded.accountType,
                     };
-                    console.log(data);
+                    // console.log(data);
                     // decoded.isLogged = true;
                     dispatch(loginUser(data));
                     getEnrolledRoomsData();

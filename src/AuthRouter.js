@@ -22,6 +22,7 @@ import UserSettings from "./Components/UserSettings";
 import AboutUs from "./Components/AboutUs";
 import { useLocation } from "react-router";
 import ReactGA from 'react-ga';
+import AllQuestionsSubmissions from "./MyRooms/AllQuestionsSubmissions/AllQuestionsSubmissions";
 
 export default function AuthRouter() {
     const [loading, setLoading] = useState(true);
@@ -95,7 +96,7 @@ export default function AuthRouter() {
                         firstName: decoded.firstName,
                         lastName: decoded.lastName,
                         email: decoded.email,
-                        accountType: !decoded.accountType ? 0 : decoded.accountType,
+                        accountType: !decoded.accountType ? 1 : decoded.accountType,
                     };
                     // console.log(data);
                     // decoded.isLogged = true;
@@ -141,6 +142,9 @@ export default function AuthRouter() {
                         </Route>
                         <Route exact path="/submissions">
                             <CheckSubmissions />
+                        </Route>
+                        <Route exact path="/all_submissions">
+                            <AllQuestionsSubmissions />
                         </Route>
                         <Route exact path="/join_room">
                             <JoinRoom />

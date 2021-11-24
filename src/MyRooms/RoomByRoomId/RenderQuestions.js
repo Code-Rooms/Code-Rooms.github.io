@@ -114,7 +114,7 @@ export default function RenderQuestions({getInitialData, questions, enrolled }) 
                             </Tooltip>
 
                             <div className="myRooms-cards-info">
-                                <div className="myRooms-cards-title">
+                                <div className="myRooms-cards-title" style={{paddingLeft: '30px', paddingRight: "30px"}}>
                                     <span>{question.title}</span>
                                 </div>
                             </div>

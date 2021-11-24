@@ -16,6 +16,10 @@ export default function QuestionTemplate({ title, setTitle, description, setDesc
     const history = useHistory();
 
     const handleTitleChange = e => {
+        if(e.target.value.length > 30) {
+            enqueueSnackbar("Title cannot be more than 30 characters", { variant: "info" });
+            return;
+        }
         setTitle(e.target.value);
     };
     const handleDescChange = e => {

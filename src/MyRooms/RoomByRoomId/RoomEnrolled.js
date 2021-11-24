@@ -6,6 +6,7 @@ import { TransverseLoading } from "react-loadingg";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { SiMicrosoftexcel } from "react-icons/si"
+import { Link } from "react-router-dom";
 
 export default function RoomEnrolled({noOfQuestions, roomInfo, setRoomInfo, enrolledTable, setEnrolledTable }) {
     const getColumnSearchProps = dataIndex => ({
@@ -250,6 +251,11 @@ export default function RoomEnrolled({noOfQuestions, roomInfo, setRoomInfo, enro
     ) : (
         <div>
             <div style={{textAlign: 'right', marginBottom: '10px'}}>
+                <Link to={"/all_submissions?roomId=" + roomInfo.roomId} >
+                    <Button style={{marginRight: '10px'}} type="primary" >
+                        All Submissions
+                    </Button>
+                </Link>
                 <Button icon={<SiMicrosoftexcel style={{marginRight: '10px'}} />} onClick={exportToExcel} >
                     Export to excel
                 </Button>

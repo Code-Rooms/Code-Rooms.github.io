@@ -112,7 +112,7 @@ export default function JoinRoom() {
                             <div>
                                 <div style={{ display: "inline-flex", margin: '10px', alignItems: 'center' }}>
                                     <span style={{minWidth: '100px'}}>{name} : </span>
-                                    <Input value={specialInfo[index]} onChange={(e) => {changeSpecialField(e, index)}} />
+                                    <Input value={specialInfo[index]} onChange={(e) => {changeSpecialField(e, index)}} required={true} />
                                 </div>
                             </div>
                         ))

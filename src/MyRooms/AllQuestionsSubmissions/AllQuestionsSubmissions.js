@@ -7,28 +7,33 @@ import SemipolarLoading from 'react-loadingg/lib/SemipolarLoading';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
 import SplitPane, { Pane } from 'react-split-pane';
-import QuestionPreview from '../EditQuestion/QuestionPreview';
 import { logoutUser } from '../../Redux/Actions/AuthActions';
 import { setBreadcrumb } from '../../Redux/Actions/RoomsDataActions';
+import QuestionPreview from '../EditQuestion/QuestionPreview';
+import SelectStudent from './SelectStudent';
 import CodeType from './CodeType';
-import ManageSelected from './ManageSelected';
 import FileType from './FileType';
 
-export default function CheckSubmissions() {
-    document.title = "Submissions | Code Rooms";
+export default function AllQuestionsSubmissions() {
+    document.title = "All Submissions | Code Rooms";
 
     const [loading, setLoading] = useState(true);
     const [overlayLoading, setOverlayLoading] = useState(false);
-    const [questionDetails, setQuestionDetails] = useState({});
-    const [roomDetails, setRoomDetails] = useState({});
-    const [enrolled, setEnrolled] = useState([])
-    const [selected, setSelected] = useState({})
 
     const queryParams = new URLSearchParams(useLocation().search);
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
     const history = useHistory();
 
+    const [roomInfo, setRoomInfo] = useState({});
+
+    // const [questionDetails, setQuestionDetails] = useState({});
+    const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
+
+    const [questions, setQuestions] = useState([]);
+    const [enrolled, setEnrolled] = useState({});
+
+    const [selected, setSelected] = useState({});
 
     useEffect(async() => {
         dispatch(setBreadcrumb( [
@@ -37,62 +42,39 @@ export default function CheckSubmissions() {
                 "url": "/my_rooms"
             },
             {
-                "name": roomDetails.roomName,
-                "url": "/my_rooms/" + roomDetails.roomId
+                "name": roomInfo.roomName,
+                "url": "/my_rooms/" + roomInfo.roomId
             },
             {
-                "name": "Submissions ("+questionDetails.title+")",
-                "url": "/submissions?qId=" + queryParams.get("qId")
+                "name": "All Submissions",
+                "url": "/all_submissions?roomId=" + queryParams.get("roomId")
             },
         ] ));
-    }, [roomDetails.roomId]);
+    }, [roomInfo.roomId]);
 
-    useEffect(async () => {
+
+    useEffect(async() => {
         setLoading(true);
-        if (!queryParams.has("qId")) {
-            enqueueSnackbar("Invalid question.", { variant: "warning" });
-            history.replace("/my_rooms");
-        }
-        await axios
-            .get("/question_submissions", {
-                params: {
-                    questionId: queryParams.get("qId"),
-                },
-            })
+        await axios.get(`/all_submissions/${queryParams.get("roomId")}`)
             .then(res => {
-                setQuestionDetails({
-                    title: res.data.questionDetails.title,
-                    description: EditorState.createWithContent(convertFromRaw(res.data.questionDetails.template.description)),
-                    sample: res.data.questionDetails.template.sample,
-                    endTime: res.data.questionDetails.endTime,
-                    noOfTCases: res.data.questionDetails.testCases,
-                    _type: res.data.questionDetails._type
-                });
+                setRoomInfo(res.data.roomInfo);
+                setQuestions(res.data.questions);
 
-                setRoomDetails({
-                    roomId: res.data.roomDetails.roomId,
-                    roomName: res.data.roomDetails.roomName,
-                    specialFields: res.data.roomDetails.specialFields,
-                });
-
-                setEnrolled(res.data.enrolled);
-
-                var select = {};
-                for(var i = 0; i < res.data.enrolled.length; i ++){
-                    if(res.data.enrolled[i].submissionId !== 0){
-                        select = res.data.enrolled[i];
-                        break;
-                    }
-                }
-                if(i === res.data.enrolled.length){
-                    enqueueSnackbar("No submissions recorded", { variant: "info" });
+                if(res.data.questions.length === 0) {
+                    enqueueSnackbar("No questions in room.", { variant: "info" });
                     history.replace("/my_rooms/" + res.data.roomDetails.roomId)
                 }
-                setSelected(select);
 
+                // setQuestionDetails(res.data.questions[0]);
+                setSelectedQuestionIndex(0);
+                setEnrolled(res.data.enrolled);
+                if(res.data.enrolled.length === 0) {
+                    enqueueSnackbar("No students enrolled.", { variant: "info" });
+                    history.replace("/my_rooms/" + res.data.roomDetails.roomId)
+                }
+                setSelected(res.data.enrolled[0]);
             })
             .catch(err => {
-                // console.log(err);
                 try {
                     if (err.response.status === 401) {
                         dispatch(logoutUser());
@@ -104,17 +86,23 @@ export default function CheckSubmissions() {
                     enqueueSnackbar("Some error occured while getting submissions", { variant: "error" });
                     history.replace("/my_rooms");
                 }
-            });
-            setTimeout(() => {
-                
-                setLoading(false);
-            }, 500);
+            })
+
+        setLoading(false);
+
     }, []);
 
     const renderRightPane = () => {
-        if(questionDetails._type === "code"){
+        if(selected.submissions[selectedQuestionIndex].submissionId === 0) {
+            return <div className="playground-code-title" style={{color: 'var(--privateRoom)'}}>
+                        No Submission Found
+                    </div>
+        }
+
+        if(questions[selectedQuestionIndex]["_type"] === "code"){
             return (
-                <CodeType 
+                <CodeType
+                    selectedQuestionIndex={selectedQuestionIndex}
                     setOverlayLoading={setOverlayLoading}
                     selected={selected}
                     setSelected={setSelected}
@@ -124,7 +112,8 @@ export default function CheckSubmissions() {
         else{
             return(
                 <FileType 
-                    selected={selected}
+                    questionId={questions[selectedQuestionIndex].questionId}
+                    submissionId={selected.submissions[selectedQuestionIndex].submissionId}
                 />
             )
         }
@@ -145,18 +134,20 @@ export default function CheckSubmissions() {
             </Modal>
             <SplitPane style={{ position: "absolute" }} minSize={350} maxSize={620} defaultSize={400} split="vertical">
                     <Pane>
-                        <ManageSelected
-                            questionDetails={questionDetails}
-                            roomDetails={roomDetails}
+                        <SelectStudent
+                            questions={questions}
+                            questionDetails={questions[selectedQuestionIndex]}
+                            roomDetails={roomInfo}
                             enrolled={enrolled}
-                            setEnrolled={setEnrolled}
+                            selectedQuestionIndex={selectedQuestionIndex}
+                            setSelectedQuestionIndex={setSelectedQuestionIndex}
                             selected={selected}
                             setSelected={setSelected}
                         />
                         <QuestionPreview
-                            title={questionDetails.title} 
-                            description={questionDetails.description} 
-                            sample={questionDetails.sample}     
+                            title={questions[selectedQuestionIndex].title} 
+                            description={EditorState.createWithContent(convertFromRaw(questions[selectedQuestionIndex].template.description))} 
+                            sample={questions[selectedQuestionIndex].template.sample}     
                         />
                     </Pane>
                     {renderRightPane()}

@@ -8,6 +8,7 @@ import { Select } from "antd";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { sendAnalytics } from "../../Components/Analytics";
+import { getLanguageToApiCode, runCodeUrl } from "../../Constants";
 const { Option } = Select;
 
 export default function CodeType({
@@ -76,14 +77,19 @@ export default function CodeType({
         setOverlayLoading(true);
         setOutput("");
         await axios
-            .post("/run_code", {
+            .post(runCodeUrl, {
                 code: getEditorCode(),
-                language: language,
+                language: getLanguageToApiCode(language),
                 input: input,
             })
             .then(res => {
-                setOutput(JSON.parse(res.data).output);
-            })
+                if(res.data.success) {
+                    setOutput(res.data.output)
+                }
+                else {
+                    enqueueSnackbar("Error in code", {variant: 'warning'});
+                    setOutput(res.data.error);
+                }            })
             .catch(err => {
                 enqueueSnackbar("Some error occured while run.", { variant: "error" });
                 // console.log(err);

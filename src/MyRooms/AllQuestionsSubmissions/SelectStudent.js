@@ -129,6 +129,20 @@ export default function SelectStudent({ questions, questionDetails, roomDetails,
         },
     ].filter(item => !item.hidden);
 
+    const handleNextStudent = () => {
+        if (selectedQuestionIndex < questions.length - 1) {
+            setSelectedQuestionIndex(selectedQuestionIndex + 1);
+            return;
+        }
+
+        setSelectedQuestionIndex(0);
+        var nextStudentIndex = (enrolled.findIndex(student => student.userName === selected.userName) + 1) % enrolled.length;
+        handleSelected(enrolled[nextStudentIndex]);
+
+
+    };
+
+
     return (
         <div>
             <div style={{ textAlign: "left", paddingLeft: "15px", paddingBottom: "15px", borderBottom: "2px solid #fff", display: 'flex'}}>
@@ -138,6 +152,13 @@ export default function SelectStudent({ questions, questionDetails, roomDetails,
                     type="primary"
                 >
                     Open Submission Table
+                </Button>
+                <Button
+                    onClick={() => {handleNextStudent(true);}}
+                    style={{ margin: "20px 0px 0px 10px" }}
+                    // type="primary"
+                >
+                    Next
                 </Button>
                 <div style={{display: 'inline-flex'}}>
 

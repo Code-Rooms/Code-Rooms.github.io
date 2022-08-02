@@ -6,9 +6,24 @@ import VerifyEmail from './Authentication/VerifyEmail';
 import Signup from './Authentication/Signup';
 import ChangePassword from './Authentication/ChangePassword';
 import AboutUs from './Components/AboutUs';
+import { useEffect } from 'react';
 // import "antd/dist/antd.css";
 
 export default function App() {
+
+	// useEffect(() => {
+	// 	// chekin if the device is mobile and if so turning on desktop mode
+	// 	const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+	// 	if(isMobile){ 
+	// 		document.getElementsByTagName('meta')['viewport'].content='width= 1024;';
+	// 	}
+	// 	else{
+	// 		document.getElementsByTagName('meta')['viewport'].content='width=device-width, initial-scale=1';
+	// 	}
+
+
+	// }, []);
+
 
   	return (
 		<Router basename="/">

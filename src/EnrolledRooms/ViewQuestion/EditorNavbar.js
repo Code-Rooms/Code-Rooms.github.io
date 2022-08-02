@@ -7,6 +7,7 @@ import { useLocation } from "react-router";
 import { useSnackbar } from "notistack";
 import moment from "moment";
 import { sendAnalytics } from "../../Components/Analytics";
+import { getLanguageToApiCode, runCodeUrl } from "../../Constants";
 const { Option } = Select;
 
 export default function EditorNavbar({questionDetails, setQuestionDetails, loading ,setLoading, getEditorCode, input, setOutput}) {
@@ -25,14 +26,19 @@ export default function EditorNavbar({questionDetails, setQuestionDetails, loadi
 
         setLoading(true);
         setOutput("");
-        await axios.post("/run_code", {
+        await axios.post(runCodeUrl, {
                 code: getEditorCode(),
-                language: questionDetails.language,
+                language: getLanguageToApiCode(questionDetails.language),
                 input: input,
             })
             .then(res => {
-                // console.log(JSON.parse(res.data));
-                setOutput(JSON.parse( res.data).output)
+                if(res.data.success) {
+                    setOutput(res.data.output)
+                }
+                else {
+                    enqueueSnackbar("Error in code", {variant: 'warning'});
+                    setOutput(res.data.error);
+                }
             })
             .catch(err => {
                 enqueueSnackbar("Some issue while run.", {variant: 'error'});

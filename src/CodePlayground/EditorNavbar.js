@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { sendAnalytics } from "../Components/Analytics";
+import { getLanguageToApiCode, runCodeUrl } from "../Constants";
 const { Option } = Select;
 
 export default function EditorNavbar({savedCodes, setSavedCodes, selectedCode, setSelectedCode, loading ,setLoading, getEditorCode, input, setOutput}) {
@@ -22,15 +23,22 @@ export default function EditorNavbar({savedCodes, setSavedCodes, selectedCode, s
 
         setLoading(true);
         setOutput("");
-        await axios.post("/run_code", {
+        await axios.post(runCodeUrl, {
                 code: getEditorCode(),
-                language: selectedCode.language,
+                language: getLanguageToApiCode(selectedCode.language),
                 input: input,
             })
             .then(res => {
-                setOutput(JSON.parse( res.data).output)
+                if(res.data.success) {
+                    setOutput(res.data.output)
+                }
+                else {
+                    enqueueSnackbar("Error in code", {variant: 'warning'});
+                    setOutput(res.data.error);
+                }
             })
             .catch(err => {
+                console.log(err);
                 enqueueSnackbar("Error while running!", {variant: "error"});
             });
         setLoading(false);
